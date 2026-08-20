@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
-
+import authRouter from "./routes/auth.routes.js";
+import profileRouter from "./routes/profile.routes.js";
 import healthRouter from "./routes/health.routes.js";
+import assessmentRouter from "./routes/assessment.routes.js";
+import skillRouter from "./routes/skill.routes.js";
+import careerRouter from "./routes/career.routes.js";
 
 const app = express();
 
@@ -14,5 +18,15 @@ app.use(
 app.use(express.json());
 
 app.use("/api/health", healthRouter);
+
+app.use("/api/auth", authRouter);
+
+app.use("/api/profile", profileRouter);
+
+app.use("/api/assessment", assessmentRouter);
+
+app.use("/api/skills", skillRouter);
+
+app.use("/api/career", careerRouter);
 
 export default app;
