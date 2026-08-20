@@ -7,6 +7,7 @@ const ai = new GoogleGenAI({
 export async function generateCareerRoadmap(data: {
   targetRole: string;
   skills: any[];
+  knowledge: string;
 }) {
   const prompt = `
 You are SkillForge's Career Architect.
@@ -29,6 +30,9 @@ ${data.targetRole}
 
 Skill analysis:
 ${JSON.stringify(data.skills, null, 2)}
+
+KNOWLEDGE FROM SKILLFORGE RAG:
+${data.knowledge}
 
 Return ONLY valid JSON.
 

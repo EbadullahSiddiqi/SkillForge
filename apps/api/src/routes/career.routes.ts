@@ -4,6 +4,7 @@ import { authenticate } from "../middleware/auth.middleware.js";
 import { StudentProfile } from "../models/StudentProfile.js";
 import { SkillAnalysis } from "../models/SkillAnalysis.js";
 import { generateCareerRoadmap } from "../services/gemini.service.js";
+import { askRAG } from "../services/rag.service.js";
 
 const router = Router();
 
@@ -33,9 +34,38 @@ router.post("/roadmap", authenticate, async (req: any, res) => {
       });
     }
 
+    const topskillGaps = analysis.skills
+      .filter((skill) => skill.skillGap > 0)
+      .sort((a, b) => b.skillGap - a.skillGap)
+      .slice(0, 5);
+
+    const ragQuestion = `
+The student wants to become a ${analysis.targetRole}.
+
+Their most important skill skillGaps are:
+
+${topskillGaps
+  .map(
+    (skill) =>
+      `- ${skill.name}: current ${skill.assessmentScore}/10, required ${skill.requiredScore}/10, skillGap ${skill.skillGap}/10`,
+  )
+  .join("\n")}
+
+Based on the SkillForge knowledge base, identify the
+most relevant concepts, learning topics, practical
+skills, prerequisites, and project ideas that would
+help this student close these skillGaps.
+
+Prioritize foundational knowledge and prerequisites.
+Do not provide generic career advice.
+`;
+
+    const ragResult = await askRAG(ragQuestion);
+
     const roadmap = await generateCareerRoadmap({
       targetRole: analysis.targetRole,
       skills: analysis.skills,
+      knowledge: ragResult.answer,
     });
 
     return res.json({

@@ -15,9 +15,8 @@ const embeddingModel = genAI.getGenerativeModel({
 
 // Model for generating the final answer
 const model = genAI.getGenerativeModel({
-  model: "gemini-3.6-flash"
+  model: "gemini-3.6-flash",
 });
-
 
 // POST /api/ai/ask
 router.post("/ask", async (req, res) => {
@@ -43,21 +42,16 @@ router.post("/ask", async (req, res) => {
 
     console.log("Question embedding generated.");
 
-
     // 3. Get all knowledge chunks from MongoDB
     const knowledgeChunks = await KnowledgeChunk.find();
 
     console.log(
-      `Found ${knowledgeChunks.length} knowledge chunks in database.`
+      `Found ${knowledgeChunks.length} knowledge chunks in database.`,
     );
-
 
     // 4. Calculate similarity for every chunk
     const scoredChunks = knowledgeChunks.map((chunk) => {
-      const score = cosineSimilarity(
-        questionEmbedding,
-        chunk.embedding
-      );
+      const score = cosineSimilarity(questionEmbedding, chunk.embedding);
 
       return {
         text: chunk.text,
@@ -66,10 +60,8 @@ router.post("/ask", async (req, res) => {
       };
     });
 
-
     // 5. Sort chunks from most relevant to least relevant
     scoredChunks.sort((a, b) => b.score - a.score);
-
 
     // 6. Select top 3 relevant chunks
     const topChunks = scoredChunks.slice(0, 3);
@@ -77,11 +69,8 @@ router.post("/ask", async (req, res) => {
     console.log("\nTop relevant chunks:");
 
     topChunks.forEach((chunk, index) => {
-      console.log(
-        `${index + 1}. ${chunk.sourceFile} → ${chunk.score}`
-      );
+      console.log(`${index + 1}. ${chunk.sourceFile} → ${chunk.score}`);
     });
-
 
     // 7. Create context from selected chunks
     const context = topChunks
@@ -93,7 +82,6 @@ ${chunk.text}
 `;
       })
       .join("\n--------------------\n");
-
 
     // 8. Send context + question to Gemini
     console.log("\nGenerating AI answer...");
@@ -123,7 +111,6 @@ ANSWER:
 
     const answer = result.response.text();
 
-
     // 9. Return response
     return res.status(200).json({
       success: true,
@@ -134,7 +121,6 @@ ANSWER:
         similarity: chunk.score,
       })),
     });
-
   } catch (error) {
     console.error("RAG request failed:");
     console.error(error);
@@ -146,6 +132,5 @@ ANSWER:
     });
   }
 });
-
 
 module.exports = router;
