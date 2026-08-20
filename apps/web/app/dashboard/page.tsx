@@ -1,199 +1,229 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/ai";
-
-type Skill = {
-  name: string;
-  assessmentScore: number;
-  requiredScore: number;
-  gap: number;
-};
-
-type Analysis = {
-  targetRole: string;
-  skills: Skill[];
-};
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { apiFetch } from "@/lib/api";
+import type { SkillAnalysis } from "@/lib/types";
+import { AppShell } from "@/components/layout/AppShell";
+import { SkillCardGrid } from "@/components/skills/SkillCard";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Button } from "@/components/ui/Button";
 
 export default function DashboardPage() {
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
-
+  const [analysis, setAnalysis] = useState<SkillAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasProfile, setHasProfile] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const data = await apiFetch("/api/skills/latest");
-
+        const data = await apiFetch<{ analysis: SkillAnalysis | null }>(
+          "/api/skills/latest",
+        );
         setAnalysis(data.analysis);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        if (err instanceof Error && err.message.includes("404")) {
+          try {
+            const profileData = await apiFetch<{
+              profile: { targetRole: string } | null;
+            }>("/api/profile");
+            if (!profileData.profile) {
+              setHasProfile(false);
+            }
+          } catch {
+            setHasProfile(false);
+          }
+        }
       } finally {
         setLoading(false);
       }
     }
-
     load();
   }, []);
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse">Loading your skill profile...</div>
-      </main>
+      <AppShell>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+          <LoadingSpinner message="Loading your skill profile..." />
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (!hasProfile) {
+    return (
+      <AppShell>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6">
+          <div className="text-center max-w-md">
+            <span className="text-5xl">⚒️</span>
+            <h1 className="text-3xl font-black mt-6">Welcome to SkillForge</h1>
+            <p className="text-muted mt-3">
+              Let&apos;s start by building your profile and assessing your
+              skills.
+            </p>
+            <Button href="/profile" size="lg" className="mt-8">
+              Create your profile →
+            </Button>
+          </div>
+        </div>
+      </AppShell>
     );
   }
 
   if (!analysis) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <p>Complete your skill assessment first.</p>
-      </main>
+      <AppShell>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6">
+          <div className="text-center max-w-md">
+            <span className="text-5xl">🎯</span>
+            <h1 className="text-3xl font-black mt-6">Complete your assessment</h1>
+            <p className="text-muted mt-3">
+              Your profile is set up. Take the skill assessment to unlock your
+              dashboard, roadmap, and boss battles.
+            </p>
+            <Button href="/assessment" size="lg" className="mt-8">
+              Take assessment →
+            </Button>
+          </div>
+        </div>
+      </AppShell>
     );
   }
 
   const skills = analysis.skills || [];
-
   const average =
     skills.length > 0
-      ? Math.round(
-          skills.reduce(
-            (sum, skill) => sum + Number(skill.assessmentScore || 0),
-            0,
-          ) / skills.length,
-        )
-      : 0;
-
-  const biggestGap = [...skills].sort(
-    (a, b) => Number(b.gap) - Number(a.gap),
-  )[0];
+      ? (
+          skills.reduce((sum, s) => sum + s.assessmentScore, 0) / skills.length
+        ).toFixed(1)
+      : "0";
+  const biggestGap = [...skills].sort((a, b) => b.skillGap - a.skillGap)[0];
+  const gapsToClose = skills.filter((s) => s.skillGap > 0).length;
 
   return (
-    <main className="min-h-screen px-6 py-10">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-
-        <div className="mb-10">
-          <p className="text-sm opacity-60 mb-2">YOUR CAREER JOURNEY</p>
-
-          <h1 className="text-4xl font-bold">
-            Your path to{" "}
-            <span className="opacity-70">{analysis.targetRole}</span>
-          </h1>
-
-          <p className="mt-3 opacity-60">
-            Your roadmap adapts as you prove what you actually know.
-          </p>
-        </div>
-
-        {/* Stats */}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-          <StatCard label="Average Skill" value={`${average}/10`} />
-
-          <StatCard label="Skills Analyzed" value={skills.length} />
-
-          <StatCard
-            label="Biggest Gap"
-            value={biggestGap ? biggestGap.name : "None"}
-          />
-        </div>
-
-        {/* Skills */}
-
-        <section className="mb-10">
-          <div className="flex justify-between items-end mb-5">
-            <div>
-              <p className="text-sm opacity-50">YOUR SKILLS</p>
-
-              <h2 className="text-2xl font-semibold">Skill gaps</h2>
-            </div>
-
-            <a href="/roadmap" className="text-sm underline opacity-70">
-              View roadmap →
-            </a>
+    <AppShell>
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="mb-10">
+            <p className="text-sm text-cyan-400 tracking-widest">
+              YOUR CAREER JOURNEY
+            </p>
+            <h1 className="text-4xl md:text-5xl font-black mt-2">
+              Path to{" "}
+              <span className="gradient-text">{analysis.targetRole}</span>
+            </h1>
+            <p className="text-muted mt-3 max-w-2xl">
+              Your skill cards reveal the truth. Click any card to flip it and
+              see detailed stats. Close the gaps to level up.
+            </p>
           </div>
 
-          <div className="space-y-4">
-            {skills
-              .sort((a, b) => Number(b.gap) - Number(a.gap))
-              .map((skill) => (
-                <SkillBar key={skill.name} skill={skill} />
-              ))}
-          </div>
-        </section>
-
-        {/* Boss */}
-
-        <section>
-          <div className="border rounded-2xl p-8">
-            <div className="flex flex-col md:flex-row justify-between gap-6">
-              <div>
-                <p className="text-sm opacity-50 mb-2">YOUR NEXT CHALLENGE</p>
-
-                <h2 className="text-3xl font-bold">⚔️ Fight your next boss</h2>
-
-                <p className="mt-3 opacity-60 max-w-xl">
-                  Don't just follow a roadmap. Prove that you've actually
-                  learned the skill.
-                </p>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            {[
+              { label: "Average Score", value: `${average}/10`, icon: "📊" },
+              { label: "Skills Tracked", value: skills.length, icon: "🃏" },
+              {
+                label: "Gaps to Close",
+                value: gapsToClose,
+                icon: "🎯",
+              },
+              {
+                label: "Biggest Gap",
+                value: biggestGap?.name ?? "None",
+                icon: "⚡",
+              },
+            ].map((stat) => (
+              <div key={stat.label} className="glass rounded-2xl p-5">
+                <span className="text-2xl">{stat.icon}</span>
+                <p className="text-xs text-muted mt-2">{stat.label}</p>
+                <p className="text-xl font-bold mt-1 truncate">{stat.value}</p>
               </div>
-
-              <a
-                href="/boss"
-                className="self-start px-6 py-3 rounded-xl border font-medium hover:opacity-70 transition"
-              >
-                Enter Battle →
-              </a>
-            </div>
+            ))}
           </div>
-        </section>
+
+          {/* Skill Cards */}
+          <section className="mb-12">
+            <div className="flex justify-between items-end mb-6">
+              <div>
+                <p className="text-sm text-muted tracking-widest">
+                  YOUR SKILL CARDS
+                </p>
+                <h2 className="text-2xl font-bold mt-1">
+                  Tap to inspect each skill
+                </h2>
+              </div>
+              <Link
+                href="/roadmap"
+                className="text-sm text-cyan-400 hover:underline"
+              >
+                View roadmap →
+              </Link>
+            </div>
+            <SkillCardGrid skills={skills} />
+          </section>
+
+          {/* Action cards */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <ActionCard
+              icon="⚔️"
+              title="Boss Battle"
+              description="Face a challenge based on your weakest skill. Prove you've learned."
+              href="/boss"
+              accent="from-red-500/20 to-orange-500/20"
+            />
+            <ActionCard
+              icon="🗺️"
+              title="Career Roadmap"
+              description="AI-generated learning path grounded in real industry knowledge."
+              href="/roadmap"
+              accent="from-violet-500/20 to-purple-500/20"
+            />
+            <ActionCard
+              icon="🧠"
+              title="AI Mentor"
+              description="Ask career questions. Get answers from our RAG knowledge base."
+              href="/mentor"
+              accent="from-cyan-500/20 to-blue-500/20"
+            />
+          </div>
+        </motion.div>
       </div>
-    </main>
+    </AppShell>
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string | number }) {
+function ActionCard({
+  icon,
+  title,
+  description,
+  href,
+  accent,
+}: {
+  icon: string;
+  title: string;
+  description: string;
+  href: string;
+  accent: string;
+}) {
   return (
-    <div className="border rounded-2xl p-6">
-      <p className="text-sm opacity-50">{label}</p>
-
-      <p className="text-3xl font-bold mt-2">{value}</p>
-    </div>
-  );
-}
-
-function SkillBar({ skill }: { skill: Skill }) {
-  const current = Number(skill.assessmentScore || 0);
-
-  const required = Number(skill.requiredScore || 0);
-
-  const width = Math.min(current * 10, 100);
-
-  return (
-    <div className="border rounded-2xl p-5">
-      <div className="flex justify-between mb-3">
-        <span className="font-medium">{skill.name}</span>
-
-        <span className="text-sm opacity-60">
-          {current}/10 → {required}/10
+    <Link href={href}>
+      <motion.div
+        whileHover={{ y: -4 }}
+        className={`glass glass-hover rounded-2xl p-6 h-full bg-gradient-to-br ${accent} transition-all`}
+      >
+        <span className="text-3xl">{icon}</span>
+        <h3 className="text-lg font-bold mt-4">{title}</h3>
+        <p className="text-sm text-muted mt-2">{description}</p>
+        <span className="inline-block mt-4 text-sm text-cyan-400">
+          Explore →
         </span>
-      </div>
-
-      <div className="h-3 rounded-full bg-black/10 overflow-hidden">
-        <div
-          className="h-full rounded-full bg-current"
-          style={{
-            width: `${width}%`,
-          }}
-        />
-      </div>
-
-      <div className="flex justify-between mt-2">
-        <span className="text-xs opacity-50">Current</span>
-
-        <span className="text-xs opacity-50">Gap: {skill.gap}</span>
-      </div>
-    </div>
+      </motion.div>
+    </Link>
   );
 }

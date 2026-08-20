@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { apiFetch } from "@/lib/api";
@@ -10,9 +10,11 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-export default function SignupPage() {
+export default function LoginForm() {
   const router = useRouter();
-  const [name, setName] = useState("");
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/dashboard";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,17 +29,17 @@ export default function SignupPage() {
       const data = await apiFetch<{
         token: string;
         user: { id: string; name: string; email: string };
-      }>("/api/auth/register", {
+      }>("/api/auth/login", {
         method: "POST",
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (data.token) setToken(data.token);
       if (data.user) setUser(data.user);
 
-      router.push("/profile");
+      router.push(redirect);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }
@@ -53,10 +55,8 @@ export default function SignupPage() {
             className="text-center mb-8"
           >
             <span className="text-4xl">⚒️</span>
-            <h1 className="text-3xl font-black mt-4">Forge your future</h1>
-            <p className="text-muted mt-2">
-              Build a career path based on what you actually know
-            </p>
+            <h1 className="text-3xl font-black mt-4">Welcome back</h1>
+            <p className="text-muted mt-2">Continue forging your career path</p>
           </motion.div>
 
           <motion.form
@@ -66,13 +66,6 @@ export default function SignupPage() {
             onSubmit={handleSubmit}
             className="glass rounded-3xl p-8 space-y-5"
           >
-            <Input
-              label="Full name"
-              value={name}
-              onChange={setName}
-              placeholder="Your name"
-              required
-            />
             <Input
               label="Email"
               type="email"
@@ -88,7 +81,6 @@ export default function SignupPage() {
               onChange={setPassword}
               placeholder="••••••••"
               required
-              minLength={6}
             />
 
             {error && (
@@ -98,14 +90,14 @@ export default function SignupPage() {
             )}
 
             <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Creating account..." : "Create account →"}
+              {loading ? "Logging in..." : "Log in →"}
             </Button>
           </motion.form>
 
           <p className="text-center mt-6 text-sm text-muted">
-            Already have an account?{" "}
-            <Link href="/login" className="text-cyan-400 hover:underline">
-              Log in
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="text-cyan-400 hover:underline">
+              Create one
             </Link>
           </p>
         </div>
