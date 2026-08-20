@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 class Skill(BaseModel):
     name: str
-    current: float
-    required: float
+    self_score: float
+    assessment_score: float
 
 
 class SkillAnalysisRequest(BaseModel):
