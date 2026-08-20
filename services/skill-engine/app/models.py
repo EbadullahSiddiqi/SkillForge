@@ -10,3 +10,8 @@ class Skill(BaseModel):
 class SkillAnalysisRequest(BaseModel):
     target_role: str
     skills: list[Skill]
+
+
+class RoadmapRequest(BaseModel):
+    target_role: str
+    skills: list[Skill]
