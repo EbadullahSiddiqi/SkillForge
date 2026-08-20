@@ -1001,6 +1001,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20":
+  version: 20.19.43
+  resolution: "@types/node@npm:20.19.43"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/9bcec3b5295bdd77ff0b44a528a69f7e22028c347507ba2c69be47ec84e30299f45043b222e9c86c510e138c9c53b2419dd5cd34920602a4a5a381c288075318
+  languageName: node
+  linkType: hard
+
+"@types/react-dom@npm:^19":
+  version: 19.2.4
+  resolution: "@types/react-dom@npm:19.2.4"
+  peerDependencies:
+    "@types/react": ^19.2.0
+  checksum: 10c0/b7d854ce17bb51a3a067168268a90f0123d10dc490f63f1ff5409f07ac715febeb8f5b7b473404a9d437106571e0312fc2937a945634d590abfc9aa46a14b01b
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^19":
+  version: 19.2.18
+  resolution: "@types/react@npm:19.2.18"
+  dependencies:
+    csstype: "npm:^3.2.2"
+  checksum: 10c0/d04216172b4b4362b310017c210dfbe019fb4f4e7dffd0313e70b3acb3051d5c3e76e7e84e3cf4c6a3c824993ffadfe3949e589a6398a09d4200e7670e2962de
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:8.67.0":
   version: 8.67.0
   resolution: "@typescript-eslint/eslint-plugin@npm:8.67.0"
@@ -1513,11 +1540,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.11.12, baseline-browser-mapping@npm:^2.9.19":
-  version: 2.11.15
-  resolution: "baseline-browser-mapping@npm:2.11.15"
+  version: 2.11.16
+  resolution: "baseline-browser-mapping@npm:2.11.16"
   bin:
     baseline-browser-mapping: dist/cli.cjs
-  checksum: 10c0/d89578cc74cd2d788c3cf2dad73bf2a21c4d1bac27fa5498da17caa1c135fe1f99c968b6f8e41c2eaafde21ac8092ec00ad28746aa01e80156908c2bdcc91f76
+  checksum: 10c0/55e667cc418f9f964cf1038ba7ccd5817dfba83ee8b5fe72f462caaa0dabc470508d0f0e06c5454382da13e45b13c5880fc131bb0c17cdc0cd251a85467bec94
   languageName: node
   linkType: hard
 
@@ -1665,6 +1692,13 @@ __metadata:
     shebang-command: "npm:^2.0.0"
     which: "npm:^2.0.1"
   checksum: 10c0/053ea8b2135caff68a9e81470e845613e374e7309a47731e81639de3eaeb90c3d01af0e0b44d2ab9d50b43467223b88567dfeb3262db942dc063b9976718ffc1
+  languageName: node
+  linkType: hard
+
+"csstype@npm:^3.2.2":
+  version: 3.2.3
+  resolution: "csstype@npm:3.2.3"
+  checksum: 10c0/cd29c51e70fa822f1cecd8641a1445bed7063697469d35633b516e60fe8c1bde04b08f6c5b6022136bb669b64c63d4173af54864510fbb4ee23281801841a3ce
   languageName: node
   linkType: hard
 
@@ -3978,20 +4012,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"skillforge@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "skillforge@workspace:."
-  dependencies:
-    "@tailwindcss/postcss": "npm:^4"
-    eslint: "npm:^9"
-    eslint-config-next: "npm:16.3.1"
-    next: "npm:16.3.1"
-    react: "npm:19.2.8"
-    react-dom: "npm:19.2.8"
-    tailwindcss: "npm:^4"
-  languageName: unknown
-  linkType: soft
-
 "source-map-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "source-map-js@npm:1.2.1"
@@ -4281,6 +4301,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5":
+  version: 5.9.3
+  resolution: "typescript@npm:5.9.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/6bd7552ce39f97e711db5aa048f6f9995b53f1c52f7d8667c1abdc1700c68a76a308f579cd309ce6b53646deb4e9a1be7c813a93baaf0a28ccd536a30270e1c5
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>":
+  version: 5.9.3
+  resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/ad09fdf7a756814dce65bc60c1657b40d44451346858eea230e10f2e95a289d9183b6e32e5c11e95acc0ccc214b4f36289dcad4bf1886b0adb84d711d336a430
+  languageName: node
+  linkType: hard
+
 "unbox-primitive@npm:^1.1.0":
   version: 1.1.0
   resolution: "unbox-primitive@npm:1.1.0"
@@ -4290,6 +4330,13 @@ __metadata:
     has-symbols: "npm:^1.1.0"
     which-boxed-primitive: "npm:^1.1.1"
   checksum: 10c0/7dbd35ab02b0e05fe07136c72cb9355091242455473ec15057c11430129bab38b7b3624019b8778d02a881c13de44d63cd02d122ee782fb519e1de7775b5b982
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10c0/c01ed51829b10aa72fc3ce64b747f8e74ae9b60eafa19a7b46ef624403508a54c526ffab06a14a26b3120d055e1104d7abe7c9017e83ced038ea5cf52f8d5e04
   languageName: node
   linkType: hard
 
@@ -4391,6 +4438,24 @@ __metadata:
   checksum: 10c0/4ef57b45aa820d7ac6496e9208559986c665e49447cb072744c13b66925a362d96dd5a46c4530a6b8e203e5db5fe849369444440cb22ecfc26c679359e5dfa3c
   languageName: node
   linkType: hard
+
+"web@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "web@workspace:."
+  dependencies:
+    "@tailwindcss/postcss": "npm:^4"
+    "@types/node": "npm:^20"
+    "@types/react": "npm:^19"
+    "@types/react-dom": "npm:^19"
+    eslint: "npm:^9"
+    eslint-config-next: "npm:16.3.1"
+    next: "npm:16.3.1"
+    react: "npm:19.2.8"
+    react-dom: "npm:19.2.8"
+    tailwindcss: "npm:^4"
+    typescript: "npm:^5"
+  languageName: unknown
+  linkType: soft
 
 "which-boxed-primitive@npm:^1.1.0, which-boxed-primitive@npm:^1.1.1":
   version: 1.1.1

@@ -70,4 +70,33 @@ router.post("/analyze", authenticate, async (req: any, res) => {
   }
 });
 
+router.get("/latest", authenticate, async (req: any, res) => {
+  try {
+    const analysis = await SkillAnalysis.findOne({
+      userId: req.userId,
+    }).sort({
+      createdAt: -1,
+    });
+
+    if (!analysis) {
+      return res.status(404).json({
+        success: false,
+        message: "No skill analysis found",
+      });
+    }
+
+    return res.json({
+      success: true,
+      analysis,
+    });
+  } catch (error) {
+    console.error("Get latest skill analysis error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch skill analysis",
+    });
+  }
+});
+
 export default router;
