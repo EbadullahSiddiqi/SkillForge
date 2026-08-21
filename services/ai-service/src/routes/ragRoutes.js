@@ -15,7 +15,7 @@ const embeddingModel = genAI.getGenerativeModel({
 
 // Model for generating the final answer
 const model = genAI.getGenerativeModel({
-  model: "gemini-3.5-flash-lite",
+  model: "gemini-3.6-flash",
 });
 
 // POST /api/ai/ask
