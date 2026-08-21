@@ -905,7 +905,7 @@ Potential future improvements include:
 
 # Team
 
-Built by a team homies, **Ebadullah Siddique and Hassan Mujtaba**.
+Built by a team of 2 homies, **Ebadullah Siddique and Hassan Mujtaba 😋**.
 
 ---
 
