@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { SkillAnalysisItem } from "@/lib/types";
 import { SKILL_COLORS, SKILL_ICONS } from "@/lib/constants";
+import * as LucideIcons from "lucide-react";
 
 type SkillCardProps = {
   skill: SkillAnalysisItem;
@@ -12,10 +13,12 @@ type SkillCardProps = {
 export function SkillCard({ skill }: SkillCardProps) {
   const [flipped, setFlipped] = useState(false);
 
-  const icon = SKILL_ICONS[skill.name] ?? "💎";
-  const gradient = SKILL_COLORS[skill.name] ?? "from-cyan-500 to-blue-600";
+  const iconName = SKILL_ICONS[skill.name] ?? "HelpCircle";
+  const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
+  const gradient = SKILL_COLORS[skill.name] ?? "from-zinc-700 to-zinc-800";
   const progress = Math.min((skill.assessmentScore / 10) * 100, 100);
   const gapPercent = Math.min((skill.skillGap / 10) * 100, 100);
+  
   const rarity =
     skill.skillGap === 0
       ? "MASTERED"
@@ -27,12 +30,12 @@ export function SkillCard({ skill }: SkillCardProps) {
 
   const rarityColor =
     skill.skillGap === 0
-      ? "text-emerald-400"
+      ? "text-emerald-400 border-emerald-950 bg-emerald-950/20"
       : skill.skillGap <= 2
-        ? "text-cyan-400"
+        ? "text-cyan-400 border-cyan-950 bg-cyan-950/20"
         : skill.skillGap <= 4
-          ? "text-amber-400"
-          : "text-red-400";
+          ? "text-amber-400 border-amber-950 bg-amber-950/20"
+          : "text-red-400 border-red-950 bg-red-950/20";
 
   return (
     <div
@@ -47,44 +50,50 @@ export function SkillCard({ skill }: SkillCardProps) {
       >
         {/* Front */}
         <div
-          className="absolute inset-0 rounded-2xl overflow-hidden"
+          className="absolute inset-0 rounded-sm overflow-hidden"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <div
-            className={`h-full bg-gradient-to-br ${gradient} p-[1px] rounded-2xl`}
-          >
-            <div className="h-full bg-surface rounded-2xl p-5 flex flex-col relative overflow-hidden">
-              <div className="absolute inset-0 card-shine opacity-50" />
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="h-full bg-zinc-850 p-[1px] rounded-sm border border-zinc-800 hover:border-zinc-700 transition-colors">
+            <div className="h-full bg-zinc-950 p-6 flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.01] rounded-full -translate-y-1/2 translate-x-1/2" />
 
-              <div className="flex justify-between items-start relative z-10">
-                <span className={`text-xs font-bold tracking-widest ${rarityColor}`}>
+              <div className="flex justify-between items-center relative z-10">
+                <span className={`text-[10px] font-mono font-bold tracking-widest px-2 py-0.5 border ${rarityColor}`}>
                   {rarity}
                 </span>
-                <span className="text-3xl">{icon}</span>
+                <IconComponent className="w-5 h-5 text-zinc-400" />
               </div>
 
-              <div className="flex-1 flex flex-col justify-center relative z-10">
-                <h3 className="text-2xl font-black tracking-tight">
+              <div className="my-6 relative z-10">
+                <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1">
+                  SKILL IDENTIFIER
+                </p>
+                <h3 className="text-2xl font-mono font-bold tracking-tight uppercase">
                   {skill.name}
                 </h3>
-                <p className="text-sm text-muted mt-1">Tap to inspect stats</p>
               </div>
 
               <div className="relative z-10">
-                <div className="flex justify-between text-xs mb-1.5">
-                  <span className="text-muted">Level</span>
-                  <span className="font-mono font-bold">
+                <div className="flex justify-between items-baseline mb-2">
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+                    SCORE LEVEL
+                  </span>
+                  <span className="font-mono text-xs font-bold text-zinc-300">
                     {skill.assessmentScore}/10
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-black/30 overflow-hidden">
+                <div className="h-1 bg-zinc-800 overflow-hidden rounded-none">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className={`h-full rounded-full bg-gradient-to-r ${gradient}`}
+                    className="h-full bg-cyan-400"
                   />
+                </div>
+                <div className="mt-3 text-center">
+                  <p className="text-[9px] font-mono text-zinc-600 uppercase tracking-wider">
+                    [ CLICK TO INSPECT DATA // FLIP CARD ]
+                  </p>
                 </div>
               </div>
             </div>
@@ -93,61 +102,69 @@ export function SkillCard({ skill }: SkillCardProps) {
 
         {/* Back */}
         <div
-          className="absolute inset-0 rounded-2xl overflow-hidden"
+          className="absolute inset-0 rounded-sm overflow-hidden"
           style={{
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)",
           }}
         >
-          <div className="h-full glass rounded-2xl p-5 flex flex-col">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">{icon}</span>
-              <div>
-                <h3 className="font-bold">{skill.name}</h3>
-                <p className="text-xs text-muted">Detailed analysis</p>
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-3 text-sm">
-              <StatRow label="Your score" value={`${skill.assessmentScore}/10`} />
-              <StatRow label="Required" value={`${skill.requiredScore}/10`} />
-              <StatRow
-                label="Skill gap"
-                value={`${skill.skillGap}`}
-                highlight={skill.skillGap > 0}
-              />
-              <StatRow
-                label="Confidence gap"
-                value={
-                  skill.confidenceGap > 0
-                    ? `+${skill.confidenceGap} (overconfident)`
-                    : skill.confidenceGap < 0
-                      ? `${skill.confidenceGap} (underestimated)`
-                      : "0 (aligned)"
-                }
-              />
-            </div>
-
-            {skill.skillGap > 0 && (
-              <div className="mt-3">
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted">Gap to close</span>
-                  <span className="text-amber-400 font-mono">
-                    {skill.skillGap} pts
+          <div className="h-full bg-zinc-950 border border-zinc-800 p-6 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between pb-4 border-b border-zinc-800 mb-4">
+                <div className="flex items-center gap-2">
+                  <IconComponent className="w-4 h-4 text-cyan-400" />
+                  <span className="font-mono font-bold text-sm uppercase tracking-wider">
+                    {skill.name}
                   </span>
                 </div>
-                <div className="h-1.5 rounded-full bg-black/30">
-                  <div
-                    className="h-full rounded-full bg-amber-400"
-                    style={{ width: `${gapPercent}%` }}
-                  />
-                </div>
+                <span className="text-[9px] font-mono text-zinc-500 uppercase">
+                  METRICS
+                </span>
               </div>
-            )}
 
-            <p className="text-xs text-muted text-center mt-3">
-              Tap to flip back
-            </p>
+              <div className="space-y-2.5">
+                <StatRow label="ASSESSMENT SCORE" value={`${skill.assessmentScore}/10`} />
+                <StatRow label="BENCHMARK REQUIRED" value={`${skill.requiredScore}/10`} />
+                <StatRow
+                  label="GAP DIFFERENCE"
+                  value={`${skill.skillGap}`}
+                  highlight={skill.skillGap > 0}
+                />
+                <StatRow
+                  label="ALIGNMENT GAP"
+                  value={
+                    skill.confidenceGap > 0
+                      ? `+${skill.confidenceGap} (OVER)`
+                      : skill.confidenceGap < 0
+                        ? `${skill.confidenceGap} (UNDER)`
+                        : "0 (ALIGNED)"
+                  }
+                  highlight={skill.confidenceGap !== 0}
+                />
+              </div>
+            </div>
+
+            <div>
+              {skill.skillGap > 0 && (
+                <div className="mt-4 pt-4 border-t border-zinc-900">
+                  <div className="flex justify-between text-[10px] font-mono mb-1.5">
+                    <span className="text-zinc-500 uppercase">GAP PROGRESS</span>
+                    <span className="text-amber-500 font-bold">
+                      -{skill.skillGap} PTS
+                    </span>
+                  </div>
+                  <div className="h-1 bg-zinc-850">
+                    <div
+                      className="h-full bg-amber-500"
+                      style={{ width: `${gapPercent}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+              <p className="text-[9px] font-mono text-zinc-600 text-center mt-3 uppercase tracking-wider">
+                [ CLICK TO DISMISS // FLIP BACK ]
+              </p>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -165,9 +182,9 @@ function StatRow({
   highlight?: boolean;
 }) {
   return (
-    <div className="flex justify-between items-center py-1.5 border-b border-white/5">
-      <span className="text-muted">{label}</span>
-      <span className={highlight ? "text-amber-400 font-semibold" : ""}>
+    <div className="flex justify-between items-center py-1 border-b border-zinc-900">
+      <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tight">{label}</span>
+      <span className={`font-mono text-xs ${highlight ? "text-amber-500 font-semibold" : "text-zinc-300"}`}>
         {value}
       </span>
     </div>
@@ -183,9 +200,9 @@ export function SkillCardGrid({ skills }: { skills: SkillAnalysisItem[] }) {
         {sorted.map((skill, i) => (
           <motion.div
             key={skill.name}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
+            transition={{ delay: i * 0.05 }}
           >
             <SkillCard skill={skill} />
           </motion.div>

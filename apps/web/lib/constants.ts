@@ -42,18 +42,18 @@ export const ROLE_DESCRIPTIONS: Record<TargetRole, string> = {
 };
 
 export const SKILL_ICONS: Record<string, string> = {
-  Python: "🐍",
-  AI: "🧠",
-  "Machine Learning": "📊",
-  JavaScript: "⚡",
-  React: "⚛️",
-  "Web Development": "🌐",
-  Linux: "🐧",
-  Git: "📦",
-  Docker: "🐳",
-  Kubernetes: "☸️",
-  Databases: "🗄️",
-  DevOps: "🔧",
+  Python: "Terminal",
+  AI: "BrainCircuit",
+  "Machine Learning": "Binary",
+  JavaScript: "Zap",
+  React: "Atom",
+  "Web Development": "Globe",
+  Linux: "Cpu",
+  Git: "GitBranch",
+  Docker: "Container",
+  Kubernetes: "Network",
+  Databases: "Database",
+  DevOps: "Settings",
 };
 
 export const SKILL_COLORS: Record<string, string> = {

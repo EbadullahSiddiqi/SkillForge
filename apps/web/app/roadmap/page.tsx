@@ -9,6 +9,21 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { Button } from "@/components/ui/Button";
 import { SKILL_ICONS } from "@/lib/constants";
+import * as LucideIcons from "lucide-react";
+import { 
+  Compass, 
+  ChevronRight, 
+  ChevronDown, 
+  ChevronUp, 
+  Plus, 
+  Minus,
+  Swords, 
+  BrainCircuit, 
+  RefreshCw,
+  Hammer,
+  Circle,
+  Play
+} from "lucide-react";
 
 export default function RoadmapPage() {
   const [roadmap, setRoadmap] = useState<CareerRoadmap | null>(null);
@@ -74,7 +89,7 @@ export default function RoadmapPage() {
       <AppShell>
         <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center gap-6">
           <LoadingSpinner message="Generating your personalized roadmap..." />
-          <p className="text-sm text-muted max-w-md text-center">
+          <p className="text-xs text-zinc-500 max-w-md text-center font-mono uppercase tracking-wider leading-relaxed">
             Our AI is analyzing your skill gaps and searching the knowledge base
             for the best learning path. This may take a moment.
           </p>
@@ -117,19 +132,19 @@ export default function RoadmapPage() {
     <AppShell>
       <div className="max-w-5xl mx-auto px-6 py-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="mb-12">
-            <p className="text-sm text-violet-400 tracking-widest">
-              YOUR CAREER PATH
+          <div className="mb-12 pb-8 border-b border-zinc-850">
+            <p className="text-xs font-mono text-violet-400 tracking-widest uppercase">
+              AI CAREER PATH DEVELOPMENT // MAP
             </p>
-            <h1 className="text-4xl md:text-5xl font-black mt-2">
+            <h1 className="text-3xl md:text-5xl font-mono font-bold uppercase tracking-tight mt-2">
               {targetRole}{" "}
-              <span className="gradient-text">Roadmap</span>
+              <span className="gradient-text font-mono">Roadmap</span>
             </h1>
             {roadmap.summary && (
-              <p className="text-muted mt-4 text-lg leading-relaxed max-w-3xl">
+              <p className="text-xs text-zinc-400 mt-4 leading-relaxed max-w-3xl font-mono">
                 {roadmap.summary}
               </p>
             )}
@@ -137,7 +152,7 @@ export default function RoadmapPage() {
 
           {/* Timeline */}
           <div className="relative">
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-500/50 via-violet-500/30 to-transparent hidden md:block" />
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-zinc-800 hidden md:block" />
 
             <div className="space-y-8">
               {roadmap.phases.map((phase, phaseIndex) => {
@@ -146,49 +161,55 @@ export default function RoadmapPage() {
                 return (
                   <motion.div
                     key={phase.phase}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -15 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: phaseIndex * 0.1 }}
+                    transition={{ delay: phaseIndex * 0.08 }}
                   >
                     <button
                       type="button"
                       onClick={() =>
                         setExpandedPhase(isExpanded ? null : phase.phase)
                       }
-                      className="w-full text-left"
+                      className="w-full text-left focus:outline-none"
                     >
                       <div className="flex gap-5 items-start">
-                        <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 items-center justify-center font-black text-sm shrink-0 z-10">
+                        <div className="hidden md:flex w-12 h-12 bg-zinc-950 border border-zinc-800 items-center justify-center font-mono font-bold text-xs shrink-0 z-10 text-cyan-400">
                           {String(phase.phase).padStart(2, "0")}
                         </div>
                         <div
-                          className={`flex-1 glass rounded-2xl p-6 transition-all ${
-                            isExpanded ? "border-cyan-500/30" : ""
+                          className={`flex-1 bg-[#101012] border p-6 transition-all ${
+                            isExpanded ? "border-cyan-500/40" : "border-zinc-850 hover:border-zinc-750"
                           }`}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <h2 className="text-xl font-bold">
+                              <p className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">[ PHASE_{phase.phase} ]</p>
+                              <h2 className="text-lg font-mono font-bold uppercase mt-1">
                                 {phase.title}
                               </h2>
-                              <p className="text-muted mt-2 text-sm">
+                              <p className="text-xs text-zinc-450 mt-2 font-mono leading-relaxed">
                                 {phase.description}
                               </p>
                             </div>
-                            <span className="text-muted text-sm">
-                              {isExpanded ? "▲" : "▼"}
+                            <span className="text-zinc-500">
+                              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </span>
                           </div>
 
-                          <div className="flex gap-2 mt-3">
-                            {phase.skills.map((s) => (
-                              <span
-                                key={s.name}
-                                className="text-xs px-2 py-1 rounded-full bg-white/5 text-muted"
-                              >
-                                {SKILL_ICONS[s.name] ?? "💎"} {s.name}
-                              </span>
-                            ))}
+                          <div className="flex flex-wrap gap-2 mt-4">
+                            {phase.skills.map((s) => {
+                              const iconName = SKILL_ICONS[s.name] ?? "HelpCircle";
+                              const SkillIcon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
+                              return (
+                                <span
+                                  key={s.name}
+                                  className="text-[10px] font-mono uppercase px-2 py-1 bg-zinc-950 border border-zinc-900 text-zinc-400 flex items-center gap-1.5"
+                                >
+                                  <SkillIcon className="w-3 h-3 text-cyan-400" />
+                                  {s.name}
+                                </span>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
@@ -202,11 +223,13 @@ export default function RoadmapPage() {
                       >
                         {phase.skills.map((skill) => {
                           const skillOpen = expandedSkill === skill.name;
+                          const iconName = SKILL_ICONS[skill.name] ?? "HelpCircle";
+                          const SkillIcon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
 
                           return (
                             <div
                               key={skill.name}
-                              className="glass rounded-2xl overflow-hidden"
+                              className="bg-[#101012] border border-zinc-850 overflow-hidden"
                             >
                               <button
                                 type="button"
@@ -215,21 +238,19 @@ export default function RoadmapPage() {
                                     skillOpen ? null : skill.name,
                                   )
                                 }
-                                className="w-full text-left p-6 flex items-center gap-4"
+                                className="w-full text-left p-6 flex items-center gap-4 focus:outline-none"
                               >
-                                <span className="text-3xl">
-                                  {SKILL_ICONS[skill.name] ?? "💎"}
-                                </span>
+                                <SkillIcon className="w-5 h-5 text-cyan-400" />
                                 <div className="flex-1">
-                                  <h3 className="font-bold text-lg">
+                                  <h3 className="font-mono font-bold text-sm uppercase tracking-wider text-foreground">
                                     {skill.name}
                                   </h3>
-                                  <p className="text-sm text-muted mt-1 line-clamp-2">
+                                  <p className="text-xs text-zinc-400 mt-1.5 line-clamp-2 font-mono leading-relaxed">
                                     {skill.why}
                                   </p>
                                 </div>
-                                <span className="text-muted">
-                                  {skillOpen ? "−" : "+"}
+                                <span className="text-zinc-500">
+                                  {skillOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                                 </span>
                               </button>
 
@@ -237,17 +258,17 @@ export default function RoadmapPage() {
                                 <motion.div
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
-                                  className="px-6 pb-6 space-y-5 border-t border-white/5 pt-5"
+                                  className="px-6 pb-6 space-y-6 border-t border-zinc-900 pt-6"
                                 >
                                   <div>
-                                    <p className="text-xs text-cyan-400 tracking-widest mb-3">
-                                      TOPICS TO LEARN
+                                    <p className="text-[10px] font-mono text-cyan-400 tracking-widest mb-3 uppercase">
+                                      CORE CURRICULUM TOPICS
                                     </p>
                                     <div className="flex flex-wrap gap-2">
                                       {skill.topics.map((topic) => (
                                         <span
                                           key={topic}
-                                          className="px-3 py-1.5 rounded-lg bg-white/5 text-sm"
+                                          className="px-3 py-1.5 bg-zinc-950 border border-zinc-900 text-xs font-mono text-zinc-300 rounded-sm"
                                         >
                                           {topic}
                                         </span>
@@ -255,33 +276,34 @@ export default function RoadmapPage() {
                                     </div>
                                   </div>
 
-                                  <div className="glass rounded-xl p-5 bg-amber-500/5 border-amber-500/20">
-                                    <p className="text-xs text-amber-400 tracking-widest">
-                                      🛠️ PROJECT
-                                    </p>
-                                    <h4 className="font-bold mt-2">
+                                  <div className="bg-zinc-950 border border-zinc-900 p-5">
+                                    <div className="flex items-center gap-1.5 text-amber-500 mb-2">
+                                      <Hammer className="w-4 h-4" />
+                                      <p className="text-[10px] font-mono tracking-widest uppercase">
+                                        PRACTICAL SYSTEM PROJECT
+                                      </p>
+                                    </div>
+                                    <h4 className="font-mono font-bold text-sm uppercase text-zinc-200">
                                       {skill.project.title}
                                     </h4>
-                                    <p className="text-sm text-muted mt-2">
+                                    <p className="text-xs text-zinc-450 mt-2 font-mono leading-relaxed">
                                       {skill.project.description}
                                     </p>
                                   </div>
 
                                   <div>
-                                    <p className="text-xs text-muted tracking-widest mb-3">
-                                      COMPLETION CRITERIA
+                                    <p className="text-[10px] font-mono text-zinc-500 tracking-widest mb-3 uppercase">
+                                      COMPLETION CRITERIA LOGS
                                     </p>
                                     <ul className="space-y-2">
                                       {skill.completionCriteria.map(
                                         (criterion) => (
                                           <li
                                             key={criterion}
-                                            className="flex gap-3 text-sm"
+                                            className="flex gap-2.5 text-xs font-mono text-zinc-400 items-start"
                                           >
-                                            <span className="text-emerald-400">
-                                              ○
-                                            </span>
-                                            {criterion}
+                                            <Circle className="w-2 h-2 text-cyan-400 mt-1 shrink-0 fill-cyan-400/20" />
+                                            <span>{criterion}</span>
                                           </li>
                                         ),
                                       )}
@@ -301,14 +323,14 @@ export default function RoadmapPage() {
           </div>
 
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
-            <Button href="/boss" variant="secondary">
-              ⚔️ Face a boss battle
+            <Button href="/boss" variant="secondary" className="font-mono uppercase text-xs tracking-wider">
+              <Swords className="w-4 h-4 mr-1.5" /> Face a boss battle
             </Button>
-            <Button href="/mentor" variant="secondary">
-              🧠 Ask AI mentor
+            <Button href="/mentor" variant="secondary" className="font-mono uppercase text-xs tracking-wider">
+              <BrainCircuit className="w-4 h-4 mr-1.5" /> Ask AI mentor
             </Button>
-            <Button onClick={loadRoadmap} variant="ghost">
-              ↻ Regenerate roadmap
+            <Button onClick={loadRoadmap} variant="ghost" className="font-mono uppercase text-xs tracking-wider">
+              <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin-hover" /> Regenerate roadmap
             </Button>
           </div>
         </motion.div>

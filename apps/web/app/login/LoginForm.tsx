@@ -9,6 +9,7 @@ import { setToken, setUser } from "@/lib/auth";
 import { AppShell } from "@/components/layout/AppShell";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Hammer, Mail, Lock, ChevronRight } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -50,54 +51,58 @@ export default function LoginForm() {
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-8"
           >
-            <span className="text-4xl">⚒️</span>
-            <h1 className="text-3xl font-black mt-4">Welcome back</h1>
-            <p className="text-muted mt-2">Continue forging your career path</p>
+            <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 text-cyan-400 flex items-center justify-center mx-auto mb-4">
+              <Hammer className="w-6 h-6 animate-pulse" />
+            </div>
+            <h1 className="text-3xl font-mono font-bold uppercase tracking-tight">Welcome back</h1>
+            <p className="text-xs text-zinc-550 font-mono mt-2 uppercase tracking-wide">Continue forging your career path</p>
           </motion.div>
 
           <motion.form
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             onSubmit={handleSubmit}
-            className="glass rounded-3xl p-8 space-y-5"
+            className="bg-[#101012] border border-zinc-850 p-8 space-y-5 shadow-2xl"
           >
             <Input
-              label="Email"
+              label="Email Address"
               type="email"
               value={email}
               onChange={setEmail}
               placeholder="you@example.com"
               required
+              className="font-mono text-xs uppercase"
             />
             <Input
-              label="Password"
+              label="Password Key"
               type="password"
               value={password}
               onChange={setPassword}
               placeholder="••••••••"
               required
+              className="font-mono text-xs uppercase"
             />
 
             {error && (
-              <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-4 py-2">
+              <p className="text-xs font-mono text-red-500 uppercase bg-red-950/20 border border-red-950 p-3">
                 {error}
               </p>
             )}
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Logging in..." : "Log in →"}
+            <Button type="submit" disabled={loading} className="w-full font-mono uppercase text-xs tracking-wider">
+              {loading ? "Authenticating..." : "Log in console"} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </motion.form>
 
-          <p className="text-center mt-6 text-sm text-muted">
-            Don&apos;t have an account?{" "}
+          <p className="text-center mt-6 text-xs font-mono text-zinc-500 uppercase">
+            Don&apos;t have a terminal account?{" "}
             <Link href="/signup" className="text-cyan-400 hover:underline">
-              Create one
+              Create credentials
             </Link>
           </p>
         </div>

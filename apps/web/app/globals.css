@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #060912;
-  --foreground: #f0f4ff;
-  --surface: #0d1220;
-  --surface-elevated: #141b2e;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.16);
-  --muted: #8892b0;
-  --accent-cyan: #22d3ee;
-  --accent-amber: #f59e0b;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --surface: #121214;
+  --surface-elevated: #18181b;
+  --border: #27272a;
+  --border-hover: #3f3f46;
+  --muted: #a1a1aa;
+  --accent-cyan: #00f2fe;
+  --accent-amber: #ff6b00;
   --accent-violet: #8b5cf6;
-  --glow-cyan: rgba(34, 211, 238, 0.15);
-  --glow-amber: rgba(245, 158, 11, 0.12);
+  --glow-cyan: rgba(0, 242, 254, 0.08);
+  --glow-amber: rgba(255, 107, 0, 0.06);
 }
 
 @theme inline {
@@ -24,8 +24,8 @@
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-amber: var(--accent-amber);
   --color-accent-violet: var(--accent-violet);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 * {
@@ -41,85 +41,88 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   min-height: 100vh;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
 }
 
 ::selection {
-  background: rgba(34, 211, 238, 0.3);
+  background: rgba(0, 242, 254, 0.25);
   color: white;
 }
 
+/* Retro-Sharp Aesthetic Overrides */
+.rounded-3xl,
+.rounded-2xl,
+.rounded-xl,
+.rounded-lg,
+.rounded-md {
+  border-radius: 4px !important;
+}
+
 .glass {
-  background: rgba(13, 18, 32, 0.7);
-  backdrop-filter: blur(20px);
+  background: #101012;
   border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .glass-hover:hover {
   border-color: var(--border-hover);
-  background: rgba(20, 27, 46, 0.8);
+  background: #141416;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #22d3ee 0%, #f59e0b 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #00f2fe 0%, #ff6b00 50%, #8b5cf6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-border {
+  border: 1px solid var(--border);
   position: relative;
 }
-
 .gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, #22d3ee, #f59e0b, #8b5cf6);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+  display: none !important;
 }
 
 .mesh-bg {
-  background-image:
-    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(34, 211, 238, 0.12), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(139, 92, 246, 0.1), transparent),
-    radial-gradient(ellipse 50% 30% at 50% 100%, rgba(245, 158, 11, 0.08), transparent);
+  background-color: var(--background);
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 .card-shine {
   background: linear-gradient(
     105deg,
     transparent 40%,
-    rgba(255, 255, 255, 0.04) 45%,
-    rgba(255, 255, 255, 0.08) 50%,
-    rgba(255, 255, 255, 0.04) 55%,
+    rgba(255, 255, 255, 0.015) 45%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.015) 55%,
     transparent 60%
   );
 }
 
 @keyframes float {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-6px);
   }
 }
 
 @keyframes pulse-glow {
-  0%,
-  100% {
-    opacity: 0.4;
+  0%, 100% {
+    opacity: 0.3;
   }
   50% {
-    opacity: 0.8;
+    opacity: 0.6;
   }
 }
 
@@ -142,6 +145,7 @@ body {
 
 .scrollbar-thin::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-track {
@@ -149,6 +153,32 @@ body {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
+  background: #27272a;
+  border-radius: 0px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Custom retro terminal accents */
+.tech-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.tech-value {
+  font-family: var(--font-mono);
+  color: var(--foreground);
+}
+
+.retro-btn-accent {
+  box-shadow: 2px 2px 0px var(--border);
+}
+.retro-btn-accent:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--border);
 }

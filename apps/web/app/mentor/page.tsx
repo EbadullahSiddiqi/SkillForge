@@ -6,6 +6,7 @@ import { askMentor } from "@/lib/rag";
 import { MENTOR_SUGGESTIONS } from "@/lib/constants";
 import type { RagSource } from "@/lib/types";
 import { AppShell } from "@/components/layout/AppShell";
+import { BrainCircuit, Send, Terminal, FileText, Sparkles } from "lucide-react";
 
 type Message = {
   id: string;
@@ -46,6 +47,8 @@ export default function MentorPage() {
     setInput("");
     setLoading(true);
 
+  if (loading) return;
+
     try {
       const response = await askMentor(question);
       setMessages((prev) => [
@@ -81,16 +84,16 @@ export default function MentorPage() {
   return (
     <AppShell>
       <div className="max-w-4xl mx-auto px-6 py-6 flex flex-col h-[calc(100vh-4rem)]">
-        <div className="mb-4">
-          <p className="text-sm text-cyan-400 tracking-widest">AI MENTOR</p>
-          <h1 className="text-2xl font-black">RAG-Powered Career Assistant</h1>
-          <p className="text-sm text-muted mt-1">
-            Answers grounded in SkillForge&apos;s curated knowledge base
+        <div className="mb-6 pb-4 border-b border-zinc-850">
+          <p className="text-xs font-mono text-cyan-400 tracking-widest uppercase">AI MENTOR CONSOLE</p>
+          <h1 className="text-2xl font-mono font-bold uppercase mt-1">RAG-Powered Career Assistant</h1>
+          <p className="text-xs text-zinc-500 mt-1 font-mono uppercase">
+            ANSWERS GROUNDED IN CURATED SYSTEM RESEARCH
           </p>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin space-y-4 pb-4">
+        <div className="flex-1 overflow-y-auto scrollbar-thin space-y-4 pb-4 px-1">
           <AnimatePresence>
             {messages.map((msg) => (
               <motion.div
@@ -100,32 +103,33 @@ export default function MentorPage() {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl p-4 ${
+                  className={`max-w-[85%] rounded-sm p-4 font-mono text-xs ${
                     msg.role === "user"
-                      ? "bg-cyan-500/20 border border-cyan-500/30"
-                      : "glass"
+                      ? "bg-cyan-950/20 border border-cyan-800/40 text-cyan-400"
+                      : "bg-[#101012] border border-zinc-850 text-zinc-300"
                   }`}
                 >
                   {msg.role === "assistant" && (
-                    <span className="text-xs text-violet-400 mb-2 block">
-                      🧠 SkillForge Mentor
+                    <span className="text-[10px] font-mono text-violet-400 uppercase tracking-wider mb-2 flex items-center gap-1.5 border-b border-zinc-900 pb-2">
+                      <BrainCircuit className="w-3.5 h-3.5" /> SYSTEM MENTOR LOG
                     </span>
                   )}
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                  <p className="leading-relaxed whitespace-pre-wrap">
                     {msg.content}
                   </p>
 
                   {msg.sources && msg.sources.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-white/5">
-                      <p className="text-xs text-muted mb-2">Sources:</p>
+                    <div className="mt-4 pt-3 border-t border-zinc-900">
+                      <p className="text-[10px] text-zinc-500 uppercase mb-2 tracking-widest font-bold">SOURCE VERIFICATION FILE:</p>
                       <div className="flex flex-wrap gap-2">
                         {msg.sources.map((source, i) => (
                           <span
                             key={i}
-                            className="text-xs px-2 py-1 rounded-lg bg-white/5 text-muted"
+                            className="text-[10px] px-2 py-1 bg-zinc-950 border border-zinc-900 text-zinc-400 flex items-center gap-1"
                           >
-                            📄 {source.file.replace(".md", "")}
-                            <span className="text-cyan-400/60 ml-1">
+                            <FileText className="w-3 h-3 text-cyan-400" />
+                            {source.file.replace(".md", "")}
+                            <span className="text-cyan-400/60 font-bold ml-1">
                               ({Math.round(source.similarity * 100)}%)
                             </span>
                           </span>
@@ -144,15 +148,15 @@ export default function MentorPage() {
               animate={{ opacity: 1 }}
               className="flex justify-start"
             >
-              <div className="glass rounded-2xl p-4">
-                <div className="flex gap-2">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce" />
+              <div className="bg-[#101012] border border-zinc-850 rounded-sm p-4">
+                <div className="flex gap-1.5 items-center">
+                  <span className="w-1.5 h-1.5 bg-cyan-400 animate-bounce" />
                   <span
-                    className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce"
+                    className="w-1.5 h-1.5 bg-cyan-400 animate-bounce"
                     style={{ animationDelay: "0.1s" }}
                   />
                   <span
-                    className="w-2 h-2 rounded-full bg-cyan-400 animate-bounce"
+                    className="w-1.5 h-1.5 bg-cyan-400 animate-bounce"
                     style={{ animationDelay: "0.2s" }}
                   />
                 </div>
@@ -171,29 +175,29 @@ export default function MentorPage() {
                 key={s}
                 type="button"
                 onClick={() => askSuggestion(s)}
-                className="text-xs px-3 py-2 rounded-full glass glass-hover transition-all"
+                className="text-[10px] font-mono uppercase tracking-wide px-3 py-2 bg-zinc-950 border border-zinc-850 hover:border-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors rounded-sm"
               >
-                {s}
+                &gt; {s}
               </button>
             ))}
           </div>
         )}
 
-        {/* Input */}
+        {/* Input Form */}
         <form onSubmit={handleSubmit} className="flex gap-3">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about skills, learning paths, projects..."
+            placeholder="Ask about skills, learning paths, project criteria..."
             disabled={loading}
-            className="flex-1 px-5 py-3 rounded-2xl glass outline-none focus:border-cyan-500/30 placeholder:text-muted/50 disabled:opacity-50"
+            className="flex-1 px-4 py-3 rounded-sm bg-zinc-950 border border-zinc-850 outline-none focus:border-cyan-500 font-mono text-xs text-zinc-300 placeholder:text-zinc-750 disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-950 font-semibold disabled:opacity-40 transition-all hover:from-cyan-400 hover:to-cyan-300"
+            className="px-5 py-3 rounded-sm bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-mono font-bold text-xs uppercase tracking-wider disabled:opacity-40 transition-colors flex items-center gap-1.5 shadow-lg shadow-cyan-500/10"
           >
-            Send
+            Send <Send className="w-3.5 h-3.5" />
           </button>
         </form>
       </div>

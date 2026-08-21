@@ -15,6 +15,8 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import * as LucideIcons from "lucide-react";
+import { User, ShieldCheck, ChevronRight, HelpCircle } from "lucide-react";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -96,7 +98,7 @@ export default function ProfilePage() {
     return (
       <AppShell>
         <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-          <LoadingSpinner message="Loading your profile..." />
+          <LoadingSpinner message="Loading your profile data..." />
         </div>
       </AppShell>
     );
@@ -106,43 +108,46 @@ export default function ProfilePage() {
     <AppShell>
       <div className="max-w-3xl mx-auto px-6 py-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="mb-10">
-            <p className="text-sm text-cyan-400 tracking-widest">STEP 1 OF 2</p>
-            <h1 className="text-4xl font-black mt-2">Build your profile</h1>
-            <p className="text-muted mt-3">
+          <div className="mb-10 pb-6 border-b border-zinc-850">
+            <p className="text-xs font-mono text-cyan-400 tracking-widest uppercase">STEP 01 // PROFILE BUILDER</p>
+            <h1 className="text-3xl font-mono font-bold uppercase tracking-tight mt-2">Build your profile</h1>
+            <p className="text-xs text-zinc-400 mt-2 font-mono leading-relaxed">
               Tell us your target role and rate your skills honestly. This
               powers everything — your analysis, roadmap, and boss battles.
             </p>
           </div>
 
-          {/* Progress */}
-          <div className="flex gap-2 mb-8">
-            <div className="h-1 flex-1 rounded-full bg-cyan-400" />
+          {/* Step Progress indicators */}
+          <div className="flex gap-3 mb-8">
+            <div className="h-1 flex-1 bg-cyan-400" />
             <div
-              className={`h-1 flex-1 rounded-full ${step >= 2 ? "bg-cyan-400" : "bg-white/10"}`}
+              className={`h-1 flex-1 transition-colors ${step >= 2 ? "bg-cyan-400" : "bg-zinc-800"}`}
             />
           </div>
 
           <form onSubmit={handleSubmit}>
             {step === 1 && (
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 15 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="space-y-6"
+                className="space-y-8"
               >
-                <Input
-                  label="Education (optional)"
-                  value={education}
-                  onChange={setEducation}
-                  placeholder="e.g. BS Computer Science, Self-taught"
-                />
+                <div className="space-y-2">
+                  <Input
+                    label="Education / Experience Level (Optional)"
+                    value={education}
+                    onChange={setEducation}
+                    placeholder="e.g. BS Computer Science, Self-taught 2 years"
+                    className="font-mono text-xs"
+                  />
+                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-muted mb-3">
-                    Target role
+                <div className="space-y-4">
+                  <label className="block text-xs font-mono text-zinc-500 uppercase tracking-widest">
+                    TARGET CAREER ROLE
                   </label>
                   <div className="grid gap-3">
                     {TARGET_ROLES.map((role) => (
@@ -150,14 +155,14 @@ export default function ProfilePage() {
                         key={role}
                         type="button"
                         onClick={() => handleRoleChange(role)}
-                        className={`text-left p-5 rounded-2xl border transition-all ${
+                        className={`text-left p-5 font-mono border transition-all rounded-sm flex flex-col justify-between ${
                           targetRole === role
-                            ? "border-cyan-500/50 bg-cyan-500/10"
-                            : "border-white/10 glass glass-hover"
+                            ? "border-cyan-500 bg-cyan-950/20"
+                            : "border-zinc-900 bg-[#101012] hover:border-zinc-800"
                         }`}
                       >
-                        <h3 className="font-bold">{role}</h3>
-                        <p className="text-sm text-muted mt-1">
+                        <h3 className="font-bold text-sm uppercase tracking-wider text-foreground">{role}</h3>
+                        <p className="text-xs text-zinc-400 mt-2 leading-relaxed font-mono">
                           {ROLE_DESCRIPTIONS[role]}
                         </p>
                       </button>
@@ -168,83 +173,86 @@ export default function ProfilePage() {
                 <Button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="w-full"
+                  className="w-full font-mono uppercase text-xs tracking-wider"
                 >
-                  Continue to skill rating →
+                  Continue to skill rating <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </motion.div>
             )}
 
             {step === 2 && (
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 15 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="space-y-6"
               >
                 <div>
-                  <h2 className="text-xl font-bold mb-1">Rate your skills</h2>
-                  <p className="text-sm text-muted mb-6">
-                    How confident are you in each skill? (0 = beginner, 10 =
-                    expert)
+                  <h2 className="text-lg font-mono font-bold uppercase tracking-tight mb-1">Rate your skills</h2>
+                  <p className="text-xs text-zinc-400 mb-6 font-mono uppercase">
+                    Rate confidence from 0 (beginner) to 10 (expert)
                   </p>
 
-                  <div className="space-y-5">
-                    {skills.map((skill) => (
-                      <div
-                        key={skill.name}
-                        className="glass rounded-2xl p-5"
-                      >
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <span className="text-2xl">
-                              {SKILL_ICONS[skill.name] ?? "💎"}
+                  <div className="space-y-4">
+                    {skills.map((skill) => {
+                      const iconName = SKILL_ICONS[skill.name] ?? "HelpCircle";
+                      const SkillIcon = (LucideIcons as any)[iconName] || LucideIcons.HelpCircle;
+
+                      return (
+                        <div
+                          key={skill.name}
+                          className="bg-[#101012] border border-zinc-850 p-5 font-mono"
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2.5">
+                              <SkillIcon className="w-4 h-4 text-cyan-400" />
+                              <span className="font-bold text-xs uppercase tracking-wider text-foreground">{skill.name}</span>
+                            </div>
+                            <span className="font-bold text-sm text-cyan-400">
+                              {skill.selfScore}
                             </span>
-                            <span className="font-semibold">{skill.name}</span>
                           </div>
-                          <span className="font-mono font-bold text-cyan-400 text-lg">
-                            {skill.selfScore}
-                          </span>
+                          
+                          <input
+                            type="range"
+                            min={0}
+                            max={10}
+                            step={1}
+                            value={skill.selfScore}
+                            onChange={(e) =>
+                              updateSkillScore(
+                                skill.name,
+                                Number(e.target.value),
+                              )
+                            }
+                            className="w-full accent-cyan-400 cursor-pointer bg-zinc-800 h-1 rounded-none appearance-none"
+                          />
+                          <div className="flex justify-between text-[10px] text-zinc-600 mt-1 uppercase">
+                            <span>Beginner</span>
+                            <span>Expert</span>
+                          </div>
                         </div>
-                        <input
-                          type="range"
-                          min={0}
-                          max={10}
-                          step={1}
-                          value={skill.selfScore}
-                          onChange={(e) =>
-                            updateSkillScore(
-                              skill.name,
-                              Number(e.target.value),
-                            )
-                          }
-                          className="w-full accent-cyan-400"
-                        />
-                        <div className="flex justify-between text-xs text-muted mt-1">
-                          <span>Beginner</span>
-                          <span>Expert</span>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
                 {error && (
-                  <p className="text-sm text-red-400 bg-red-500/10 rounded-lg px-4 py-2">
+                  <p className="text-xs font-mono text-red-500 uppercase bg-red-950/20 border border-red-950 p-3">
                     {error}
                   </p>
                 )}
 
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   <Button
                     type="button"
                     variant="secondary"
                     onClick={() => setStep(1)}
-                    className="flex-1"
+                    className="flex-1 font-mono uppercase text-xs tracking-wider"
                   >
-                    ← Back
+                    Back
                   </Button>
-                  <Button type="submit" disabled={saving} className="flex-1">
-                    {saving ? "Saving..." : "Save & take assessment →"}
+                  <Button type="submit" disabled={saving} className="flex-1 font-mono uppercase text-xs tracking-wider">
+                    {saving ? "Saving..." : "Save & Continue"}
                   </Button>
                 </div>
               </motion.div>
