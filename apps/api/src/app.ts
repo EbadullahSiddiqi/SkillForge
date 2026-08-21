@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://skill-forge-steel-gamma.vercel.app/",
+    origin: "https://skill-forge-steel-gamma.vercel.app",
   }),
 );
 
