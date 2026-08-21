@@ -1,0 +1,4 @@
+aws_region     = "us-east-1"
+mongodb_uri    = "mongodb+srv://<user>:<password>@cluster.mongodb.net/skillforge"
+jwt_secret     = "replace_me"
+gemini_api_key = "replace_me"
